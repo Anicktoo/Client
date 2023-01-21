@@ -50,6 +50,7 @@ let pause_updating = false;
 let game_finished = false;
 let choose_card_listener_is_placed = false;
 let is_exchange_from_you = false;
+let is_exchange_to_you = false;
 let is_any_exchange = false;
 
 document.getElementById("login_button").onclick = function (event) {
@@ -253,10 +254,10 @@ function update_game() {
     else {
       if (resp.RESULTS[0].notif) {
         game_finished = true;
+        pause_game_update();
         let res = resp.RESULTS[0].rus_notif[0];
         show_message(res);
         resp.RESULTS.splice(0, 1);
-        pause_game_update();
         if (res === "Победа!") {
           announcement_show("Победа!");
           cells[8].powered = 1;
@@ -323,19 +324,22 @@ function update_game() {
 
       let exchange_result = resp.RESULTS[13];
 
-      if (exchange_result.from_number[0]) {
+      if (exchange_result.from_number[0] && exchange_result.approved[0] == null) {
         is_any_exchange = true;
         exhange_message_make(exchange_result.from_number[0], exchange_result.to_number[0], exchange_result.offer_resource[0], exchange_result.request_resource[0]);
         //Ваше предложение
         if (exchange_result.from_number[0] === user_player_index + 1) {
           is_exchange_from_you = true;
+          is_exchange_to_you = false;
         }
         //Вам предложение
         else if (exchange_result.to_number[0] === user_player_index + 1) {
           is_exchange_from_you = false;
+          is_exchange_to_you = true;
         }
         else {
           is_exchange_from_you = false;
+          is_exchange_to_you = false;
         }
       }
       else {
@@ -343,6 +347,7 @@ function update_game() {
           show_message("");
         is_any_exchange = false;
         is_exchange_from_you = false;
+        is_exchange_to_you = false;
       }
       show_game();
     }
@@ -350,7 +355,7 @@ function update_game() {
 
   call_function_with_formData(inner_function, fd);
 
-  if (!pause_updating)
+  if (!pause_updating && !game_finished)
     timeOutInterval = setTimeout(update_game, 5000);
 }
 
@@ -453,33 +458,55 @@ function announcement_show(value) {
 
 
 ///////////////////////////////////////////////////SHOW GAME///////////////////////////////////////////////////
-
+const action_block = document.querySelector(".no_action");
+const p1_buttons = [...document.querySelectorAll(".p1_button")];
+const answer_cont = document.getElementById("exchange_answer_container");
+const exchange_cancel_button = document.getElementById("exchange_cancel");
 function show_action_panel() {
   /*show/disable action panel*/
+  //Чужой ход
   if (turn !== user_player_index + 1 || game_finished) {
     if (is_your_turn_on_client) {
-      [...document.querySelectorAll(".p1_button")].forEach((element) => {
+      p1_buttons.forEach((element) => {
         element.style.display = "none";
       });
-      document.querySelector(".no_action").style.display = "block";
+      action_block.style.display = "block";
       is_your_turn_on_client = false;
+    }
+    if (answer_cont.style.display !== "flex" && is_exchange_to_you) {
+      action_block.style.display = "none";
+      answer_cont.style.display = "flex";
+    }
+    else if (answer_cont.style.display === "flex" && !is_exchange_to_you) {
+      action_block.style.display = "block";
+      answer_cont.style.display = "none";
     }
   }
   else {
     if (!is_your_turn_on_client) {
-      [...document.querySelectorAll(".p1_button")].forEach((element) => {
+      p1_buttons.forEach((element) => {
         element.style.display = "block";
       });
-      document.getElementById("exchange_cancel").style.display = "none";
-      document.querySelector(".no_action").style.display = "none";
+      exchange_cancel_button.style.display = "none";
+      action_block.style.display = "none";
+      answer_cont.style.display = "none";
       is_your_turn_on_client = true;
     }
-    if (is_exchange_from_you) {
-      [...document.querySelectorAll(".p1_button")].forEach((element) => {
+    if (exchange_cancel_button.style.display !== "block" && is_exchange_from_you) {
+      p1_buttons.forEach((element) => {
         element.style.display = "none";
       });
-      document.getElementById("exchange_cancel").style.display = "block";
-      document.querySelector(".no_action").style.display = "none";
+      exchange_cancel_button.style.display = "block";
+      action_block.style.display = "none";
+      answer_cont.style.display = "none";
+    }
+    else if (exchange_cancel_button.style.display === "block" && !is_exchange_from_you) {
+      p1_buttons.forEach((element) => {
+        element.style.display = "block";
+      });
+      exchange_cancel_button.style.display = "none";
+      action_block.style.display = "none";
+      answer_cont.style.display = "none";
     }
   }
 
@@ -1216,8 +1243,6 @@ function exhange_message_make(from_num, to_num, res_off, res_req) {
 
 ///////////////////////////////////////////////////EXCHANGE CANCEL///////////////////////////////////////////////////
 
-const exchange_cancel_button = document.getElementById("exchange_cancel");
-
 exchange_cancel_button.addEventListener("click", function () {
   pause_game_update();
   let fd = new FormData();
@@ -1236,14 +1261,51 @@ exchange_cancel_button.addEventListener("click", function () {
 
     show_message("");
     is_exchange_from_you = false;
-
-    [...document.querySelectorAll(".p1_button")].forEach((element) => {
+    p1_buttons.forEach((element) => {
       element.style.display = "block";
     });
-    document.getElementById("exchange_cancel").style.display = "none";
-
+    exchange_cancel_button.style.display = "none";
+    action_block.style.display = "none";
+    answer_cont.style.display = "none";
     continue_game_update();
   }
   call_function_with_formData(inner_function, fd);
 
 });
+
+///////////////////////////////////////////////////EXCHANGE ANSWER///////////////////////////////////////////////////
+document.getElementById("exchange_yes").addEventListener("click", function () {
+  exchange_answer(1);
+});
+document.getElementById("exchange_no").addEventListener("click", function () {
+  exchange_answer(0);
+});
+
+function exchange_answer(answer) {
+  pause_game_update();
+  let fd = new FormData();
+  fd.append('pname', 'exchange_answer');
+  fd.append('db', '284196');
+  fd.append('p1', tk);
+  fd.append('p2', room);
+  fd.append('p3', answer);
+  fd.append('format', 'columns_compact');
+
+  const inner_function = function (resp) {
+    if (resp.RESULTS[0].error) {
+      show_message(resp.RESULTS[0].rus_error[0]);
+      continue_game_update();
+      return;
+    }
+    if (answer)
+      show_message("Обмен подтвержден!");
+    else
+      show_message("Отказ от обмена");
+
+    is_exchange_to_you = false;
+    action_block.style.display = "block";
+    answer_cont.style.display = "none";
+    setTimeout(continue_game_update, 2000);
+  }
+  call_function_with_formData(inner_function, fd);
+}

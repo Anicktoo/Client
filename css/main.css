@@ -457,3 +457,18 @@ header {
   font-size: 20vh;
   white-space: nowrap;
 }
+
+#exchange_answer_container {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 20rem;
+}
+
+#exchange_yes {
+  background-image: linear-gradient(45deg, #0fa50f 0%, #007e39 51%, #3fee9c 100%);
+}
+
+#exchange_no {
+  background-image: linear-gradient(45deg, #ff1212 0%, #c40021 51%, #e44568 100%);
+}
