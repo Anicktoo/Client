@@ -5,14 +5,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <base href="."> -->
     <link type="text/css" rel="stylesheet" href="css/main.css" />
-    <title>Document</title>
+    <title>Solar Storm</title>
 </head>
 
 <body>
     <header>
-        <button id="test" type="submit">test</button>
+        <h2 id="login_label">Ваш логин: </h2>
         <div class="login_container">
             <label for="uname"><b>Логин</b></label>
             <input id="user_login" type="text" placeholder="Введите логин" name="uname" required>
@@ -23,7 +22,6 @@
             <button id="login_button" type="submit">Войти</button>
             <button id="reg_button" type="submit">Регистрация</button>
         </div>
-        <h2 id="login_label">Ваш логин: </h2>
     </header>
     <div class="wrapper">
         <div class="left_container">
@@ -50,9 +48,6 @@
                         <h3>Сложность</h3>
                     </div>
                     <div class="room-value room-value-dif">
-                        <!-- dddddddddddddddddddddddddddddd
-                        dddddddddddddddddddddddddddddd
-                        dddddddddddddddddddddddddddddd -->
                     </div>
                     <div class="room-header room-header-time">
                         <h3>Время на ход</h3>
@@ -61,7 +56,7 @@
 
                     </div>
                     <div class="room-header room-header-players">
-                        <h3>Количество игроков</h3>
+                        <h3>Ожидающих в комнате</h3>
                     </div>
                     <div class="room-value room-value-players">
 
@@ -70,30 +65,30 @@
                         <h3>Пароль</h3>
                     </div>
                     <div class="room-value room-value-psw">
-                        <input id="room-password" class="room-password" type="password" placeholder="Введите пароль"
-                            name="room-psw" required>
+                        <input class="room-password" type="password" placeholder="Введите пароль" name="room-psw"
+                            required>
                         <div class="no-room-psw">Без пароля</div>
                     </div>
                     <div class="room-value room-value-join">
-                        <button id="room-enter-button" class="room-enter-button">Войти</button>
+                        <button class="game-in-button">Перейти к игре</button>
+                        <button class="game-start-button">Начать игру</button>
+                        <button class="room-enter-button">Войти</button>
                         <div class="game-started">Игра начата</div>
+                        <div class="guests-waiting">Ожидание игроков</div>
+                        <div class="admin-waiting">Ожидание администратора</div>
                     </div>
-
                 </div>
-
             </div>
         </div>
-        <div class="in_room_container">
-            <h1>Вы в комнатах</h1>
-            <div class="in_room">
-
+        <div class="right_container">
+            <div class="in_room_container">
+                <h1>Вы в комнатах</h1>
+                <div id="hidden_in_room" class="room glowing">
+                </div>
             </div>
         </div>
     </div>
     <script src="js\main.js"></script>
-    <script src="js\game.js"></script>
-
-
 </body>
 
 </html>

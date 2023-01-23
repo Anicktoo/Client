@@ -47,6 +47,8 @@ button:hover {
 }
 
 header {
+  display: flex;
+  justify-content: space-between;
   padding: 2rem;
   color: white;
   background-color: #000;
@@ -117,17 +119,17 @@ input {
 }
 
 .left_container {
-  width: 60%;
+  width: 50%;
   margin-right: 2rem;
   padding: 1rem;
-  background-color: #003300;
+  /* background-color: #003300; */
 }
 
 .room_container {
   display: none;
 }
 
-.in_room_container {
+.right_container {
   display: none;
 }
 
@@ -143,6 +145,10 @@ input {
 }
 
 #hidden_room {
+  display: none;
+}
+
+#hidden_in_room {
   display: none;
 }
 
@@ -173,9 +179,12 @@ input {
 }
 
 .room-value-join {
+  display: flex;
   grid-row-start: 1;
   grid-row-end: 3;
+  /* grid-column: 5/-1; */
   align-self: center;
+  justify-content: center;
 }
 
 .players_container {
