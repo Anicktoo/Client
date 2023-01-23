@@ -191,6 +191,7 @@ function first_show_game() {
   const log_lab = document.getElementById("login_label")
   log_lab.textContent = "Ваш логин: " + user_login;
   log_lab.style.display = "inline-block";
+  log_lab.parentElement.style.flexDirection = "row";
   for (let cell of cells) {
     let cur_cell = document.querySelector("#c" + cell.location);
     cur_cell.querySelector(".cell_name").innerHTML = cell.type;
