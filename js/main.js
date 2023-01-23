@@ -54,6 +54,7 @@ class Room {
     this.element.querySelector(".game-start-button").addEventListener("click", () => { startGame(this) });
     this.element.querySelector(".game-in-button").addEventListener("click", () => { toGame(this) });
     this.element.querySelector(".room-enter-button").addEventListener("click", () => { enter_room(this) });
+    this.element.querySelector(".exit-room").addEventListener("click", () => { exit_room(this) });
     this.updateRoom(this.admin, this.gameStarted, this.playersInRoom, this.in_room_now, this.guests);
     this.container.insertBefore(this.element, prevEl.nextSibling);
   }
@@ -100,6 +101,8 @@ class Room {
     }
     //В комнате (Справа)
     else {
+      const close = this.element.querySelector(".exit-room");
+      close.style.display = "block";
       //Добавить в войденную комнату (->)
       if (!this.in_room_now) {
         this.in_room_now = is_in_room;
@@ -210,6 +213,7 @@ document.getElementById("reg_button").onclick = function (event) {
 function showRooms() {
   document.querySelector(".room_container").style.display = "block";
   document.querySelector(".right_container").style.display = "flex";
+  document.querySelector("#add-room").style.display = "block";
   // document.querySelector(".login_container").style.display = "none";
   const log_label = document.querySelector("#login_label");
   log_label.style.display = "inline-block";
@@ -348,7 +352,6 @@ function update_info(tk_check) {
       }
       rooms = rooms.slice(0, i);
     }
-    console.log(rooms);
   }
 
   call_function_with_formData(inner_function, fd);
@@ -391,6 +394,83 @@ function enter_room(room) {
 
   call_function_with_formData(inner_function, fd);
 }
+///////////////////////////////////////////////////EXIT ROOM///////////////////////////////////////////////////
+
+function exit_room(room) {
+  console.log(room.id);
+  pause_update();
+
+  let fd = new FormData();
+  fd.append('pname', 'exit_room');
+  fd.append('db', '284196');
+  fd.append('p1', tk);
+  fd.append('p2', room.id);
+  fd.append('format', 'columns_compact');
+
+  const inner_function = function (resp) {
+    if (resp.RESULTS[0].error) {
+      show_message(resp.RESULTS[0].rus_error[0]);
+    }
+    else {
+      console.log(resp);
+      show_message("");
+    }
+    continue_update();
+  }
+
+  call_function_with_formData(inner_function, fd);
+}
+
+///////////////////////////////////////////////////ADD ROOM///////////////////////////////////////////////////
+
+const modal = document.getElementById("myModal");
+const btn = document.getElementById("add-room");
+const span = document.querySelector(".exit-modal");
+
+btn.onclick = function () {
+  modal.style.display = "block";
+}
+
+span.onclick = function () {
+  modal.style.display = "none";
+}
+
+window.onclick = function (event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+document.getElementById("finish-and-add").addEventListener("click", function () {
+  pause_update();
+
+  const psw_new_room = document.getElementById("new-room-password").value;
+  const time_new_room = document.getElementById("new-room-time").value;
+  const dif_new_room = document.getElementById("dif-select").value;
+
+  let fd = new FormData();
+  fd.append('pname', 'new_room');
+  fd.append('db', '284196');
+  fd.append('p1', tk);
+  fd.append('p2', psw_new_room);
+  fd.append('p3', time_new_room);
+  fd.append('p4', dif_new_room);
+  fd.append('format', 'columns_compact');
+
+  const inner_function = function (resp) {
+    if (resp.RESULTS[0].error) {
+      show_message(resp.RESULTS[0].rus_error[0]);
+    }
+    else {
+      show_message("");
+    }
+    continue_update();
+    modal.style.display = "none";
+  }
+
+  call_function_with_formData(inner_function, fd);
+});
+
 
 ///////////////////////////////////////////////////TO GAME///////////////////////////////////////////////////
 

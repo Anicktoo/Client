@@ -76,6 +76,7 @@
                         <div class="game-started">Игра начата</div>
                         <div class="guests-waiting">Ожидание игроков</div>
                         <div class="admin-waiting">Ожидание администратора</div>
+                        <span class="exit-room close">&times;</span>
                     </div>
                 </div>
             </div>
@@ -84,6 +85,37 @@
             <div class="in_room_container">
                 <h1>Вы в комнатах</h1>
                 <div id="hidden_in_room" class="room glowing">
+                </div>
+            </div>
+        </div>
+        <button id="add-room" type="button">Новая комната +</button>
+        <div id="myModal" class="modal">
+            <div class="modal-content glowing">
+                <div class="modal-header">
+                    <span class="exit-modal close">&times;</span>
+                    <h2>Новая комната</h2>
+                </div>
+                <div class="modal-body">
+                    <label for="room-psw"><b>Пароль комнаты (Можно оставить пустой)</b></label>
+                    <input id="new-room-password" type="password" placeholder="Введите пароль" name="room-psw" required>
+
+                    <label for="time"><b>Длительность хода в секундах</b></label>
+                    <input id="new-room-time" type="text" placeholder="Введите значение" name="time" required>
+
+                    <section>
+                        <label class="select-label">Выберите сложность:</label>
+                        <select id="dif-select">
+                            <option value="Низкая">Низкая</option>
+                            <option value="Средняя">Средняя</option>
+                            <option value="Высокая">Высокая</option>
+                            <option value="Максимальная">Максимальная</option>
+                            <option value="Пекло">Пекло</option>
+                        </select>
+                    </section>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="finish-and-add" type="button">Создать</button>
                 </div>
             </div>
         </div>

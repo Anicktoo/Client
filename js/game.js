@@ -1290,6 +1290,7 @@ window.addEventListener("load", function () {
     user_login = this.sessionStorage.getItem("login");
     tk = this.sessionStorage.getItem("tk");
     room = this.sessionStorage.getItem("room");
+    console.log(user_login, tk, room);
     first_update_game();
   }
   catch (err) {
